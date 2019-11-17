@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+<div id="main" style="height: 360px;"></div>
+
+<script src="https://cdn.bootcss.com/jquery/1.8.0/jquery-1.8.0.js"></script>
+<script src="js/echarts.js"></script>
+<script>
+var myChart = echarts.init(document.getElementById('main'));
+
+option = {
+    title: {
+        text: '世界人口总量',
+        subtext: '数据来自网络'
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    legend: {
+        data: ['2011年', '2012年']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01]
+    },
+    yAxis: {
+        type: 'category',
+        triggerEvent: true,
+        data: ['','印尼','美国','印度','中国（这是也一个正在复兴的国度）','世界人口(万)'],
+        axisLabel: {
+             formatter: function(value) {
+                 var res = value;
+                 if(res.length > 5) {
+                     res = res.substring(0, 4) + "..";
+                 }
+                return res;
+              }
+       }
+    },
+    series: [
+        {
+            name: '2011年',
+            type: 'bar',
+            data: [0, 23489, 29034, 104970, 131744, 630230]
+        }
+    ]
+};
+
+myChart.setOption(option);
+
+extension(myChart);
+                    
+function extension(myChart) {
+    //判断是否创建过div框,如果创建过就不再创建了
+    var id = document.getElementById("extension");
+
+    if(!id) {
+        var div = "<div id = 'extension' sytle=\"display:none\"></div>"
+        $('html').append(div);
+    }
+
+    myChart.on('mouseover', function(params) {
+
+        if(params.componentType == "yAxis") {
+            $('#extension').css({
+                "position": "absolute",
+                "color": "#ffffff",
+                //"border":"solid 2px white",
+                "font-family": "Arial",
+                "font-size": "12px",
+                "padding": "3px",
+                "display": "inline",
+                "background": "#666666"
+            }).text(params.value);
+
+
+            $("html").mousemove(function(event) {
+                var xx = event.pageX - 30;
+                var yy = event.pageY + 20;
+                $('#extension').css('top', yy).css('left', xx);
+            });
+        }
+    });
+
+    myChart.on('mouseout', function(params) {
+        if(params.componentType == "yAxis") {
+            $('#extension').css('display', 'none');
+        }
+    });
+};
+</script>
+</body>
+</html>
